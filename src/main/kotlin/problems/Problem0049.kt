@@ -1,14 +1,14 @@
 package problems
 
 import util.primes
-import util.primesCheckArray
+import util.primesSieve
 
 fun main() = runProblem()
 
 class Problem0049 : Problem(null) {
     override fun calc(): Any {
         val primes = primes(10000)
-        val primesCheck = primesCheckArray(10000)
+        val primesCheck = primesSieve(10000)
         val primesChars = primes.map { it.toLastPermutation() }
         primes.forEachIndexed { index, p1 ->
             val p1s = primesChars[index]

@@ -45,6 +45,7 @@ abstract class Problem(
             System.err.println(result)
             throw error("Wrong!")
         }
+        val meassureRepeat = if (runAll) (1) else meassureRepeat
         System.setOut(PrintStream(OutputStream.nullOutputStream()))
         measureStage("Init", meassureRepeat / 2, out)
         val time = measureStage("Measuring", meassureRepeat, out)
