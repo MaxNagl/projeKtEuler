@@ -37,3 +37,29 @@ fun <T> Array<T>.permutations(
         set(index, a)
     }
 }
+
+fun Int.toLastPermutation(): Int {
+    val digits = IntArray(10)
+    var i = this
+    while (i != 0) {
+        digits[i % digits.size]++
+        i /= 10
+    }
+    (9 downTo 0).forEach { d -> repeat(digits[d]) { i = i * 10 + d } }
+    return i
+}
+
+fun Int.isPermutation(other: Int): Boolean {
+    val digits = IntArray(10)
+    var i = this
+    while (i > 0) {
+        digits[i % digits.size]++
+        i /= 10
+    }
+    var j = other
+    while (j > 0) {
+        digits[j % digits.size]--
+        j /= 10
+    }
+    return digits.all { it == 0 }
+}

@@ -2,6 +2,7 @@ package problems
 
 import util.primes
 import util.primesSieve
+import util.toLastPermutation
 
 fun main() = runProblem()
 
@@ -25,17 +26,5 @@ class Problem0049 : Problem(null) {
             }
         }
         return 0
-    }
-
-    val digits = IntArray(10)
-    private fun Int.toLastPermutation(): Int {
-        digits.fill(0)
-        var i = this
-        while (i != 0) {
-            digits[i % 10]++
-            i /= 10
-        }
-        (9 downTo 0).forEach { d -> (1..digits[d]).forEach { i = i * 10 + d } }
-        return i
     }
 }

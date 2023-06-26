@@ -1,5 +1,7 @@
 package problems
 
+import util.toLastPermutation
+
 fun main() = runProblem()
 
 class Problem0052 : Problem(142857) {
@@ -14,16 +16,5 @@ class Problem0052 : Problem(142857) {
             return i
         }
         return 0
-    }
-
-    private fun Int.toLastPermutation(): Int {
-        val digits = IntArray(10)
-        var i = this
-        while (i != 0) {
-            digits[i % 10]++
-            i /= 10
-        }
-        (9 downTo 0).forEach { d -> repeat(digits[d]) { i = i * 10 + d } }
-        return i
     }
 }
