@@ -45,6 +45,33 @@ fun primeFactors(num: Long, primes: IntArray? = null, block: (Int) -> Unit) {
     return
 }
 
+fun primeFactors(num: Int, primes: IntArray? = null, block: (Int) -> Unit) {
+    val ps = primes ?: primes(sqrt(num.toFloat()).toInt() + 1)
+    var n = num
+    ps.forEach {
+        while (n % it == 0) {
+            block(it)
+            n /= it
+        }
+        if (it * it > n) {
+            if (n != 1) block(n)
+            return
+        }
+    }
+    block(n)
+    return
+}
+
+fun Int.eulerPhi(primes: IntArray? = null): Int {
+    var count = 1
+    var last = 0
+    primeFactors(this, primes) { f ->
+        count *= if (f == last) f else (f - 1)
+        last = f
+    }
+    return count
+}
+
 fun divisorsProper(num: Int, block: (Int) -> Unit) {
     val limit = sqrt(num.toFloat()).toInt()
     block(1)
