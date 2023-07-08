@@ -1,8 +1,9 @@
 package util
 
+import kotlin.LongArray
 import kotlin.math.max
 
-fun List<List<Any>>.printMatrix() {
+fun Iterable<Iterable<Any?>>.printMatrix() {
     var len = 0
     forEach { line ->
         line.forEach { i ->
@@ -17,3 +18,7 @@ fun List<List<Any>>.printMatrix() {
         println()
     }
 }
+
+fun Array<Array<Any>>.printMatrix() = map { it.toList() }.printMatrix()
+fun Array<IntArray>.printMatrix() = map { it.toList() }.printMatrix()
+fun Array<LongArray>.printMatrix() = map { it.toList() }.printMatrix()

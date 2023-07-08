@@ -54,6 +54,7 @@ abstract class Problem(
             out.println("$calc in $ms ms.")
         else
             out.println("In $ms ms.")
+        System.setOut(out)
     }
 
     private fun measureStage(
@@ -89,6 +90,14 @@ abstract class Problem(
         dataCache?.let { return dataCache as List<T> }
         dataCache = dataFile(file).readText().split("\n").map { transform(it.trim()) }
         return dataCache as List<T>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> getDataCsvLines(file: String? = null, transform: (String) -> T): List<List<T>> {
+        dataCache?.let { return dataCache as List<List<T>> }
+        dataCache = dataFile(file).readText().split("\n")
+            .map { l -> l.split(",").map { transform(it.trim()) } }
+        return dataCache as List<List<T>>
     }
 
     @Suppress("UNCHECKED_CAST")

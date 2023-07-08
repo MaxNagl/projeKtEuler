@@ -1,5 +1,7 @@
 package util
 
+import kotlin.math.sign
+
 fun String.isPalindrome(): Boolean {
     val l = length - 1
     for (i in 0..l / 2) if (get(i) != get(l - i)) return false
@@ -77,4 +79,48 @@ fun String.numberToWord(): String {
         last = c
     }
     return sb.toString()
+}
+
+fun String.parseRoman(): Int? {
+    var value = 0
+    var last = ' '
+    var lastValue = 0
+    var lastCount = 0
+    forEach { c ->
+        if (last != c) {
+            val newValue = when (c) {
+                'I' -> 1; 'V' -> 5
+                'X' -> 10; 'L' -> 50
+                'C' -> 100; 'D' -> 500
+                'M' -> 1000
+                else -> return null
+            }
+            value += lastValue * lastCount * (lastValue - newValue).sign
+            last = c
+            lastValue = newValue
+            lastCount = 1
+        } else lastCount++
+    }
+    return value + lastValue * lastCount
+}
+
+private val romanParts = listOf(
+    "M" to 1000, "CM" to 900, "DCCC" to 800, "DCC" to 700, "DC" to 600,
+    "D" to 500, "CD" to 400, "CCC" to 300, "CC" to 200, "C" to 100,
+    "XC" to 90, "LXXX" to 80, "LXX" to 70, "LX" to 60,
+    "L" to 50, "XL" to 40, "XXX" to 30, "XX" to 20, "X" to 10,
+    "IX" to 9, "VIII" to 8, "VII" to 7, "VI" to 6,
+    "V" to 5, "IV" to 4, "III" to 3, "II" to 2, "I" to 1,
+)
+
+fun Int.toRomanString(): String {
+    val text = StringBuilder()
+    var i = this
+    romanParts.forEach {
+        while (i >= it.second) {
+            text.append(it.first)
+            i -= it.second
+        }
+    }
+    return text.toString()
 }
