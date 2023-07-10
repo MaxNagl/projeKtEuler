@@ -48,7 +48,7 @@ fun primeFactors(num: Long, primes: IntArray? = null, block: (Int) -> Unit) {
 fun primeFactors(num: Int, primes: IntArray? = null, block: (Int) -> Unit) {
     val ps = primes ?: primes(sqrt(num.toFloat()).toInt() + 1)
     var n = num
-    ps.forEach {
+    for (it in ps) {
         while (n % it == 0) {
             block(it)
             n /= it
@@ -84,6 +84,7 @@ fun divisorsProper(num: Int, block: (Int) -> Unit) {
 }
 
 fun divisorsProperSum(num: Int): Int {
+    if (num < 2) return 0
     val limit = sqrt(num.toFloat()).toInt()
     var sum = 1
     for (d in 2..limit) {
@@ -93,4 +94,43 @@ fun divisorsProperSum(num: Int): Int {
         }
     }
     return sum
+}
+
+fun divisorsProperFast(num: Int, primes: IntArray, tmpArray: IntArray = IntArray(1024)): IntArray {
+    var divisors = tmpArray
+    divisors[0] = 1
+    var count = 1
+    var last = 1
+    var lastStart = 0
+    var lastEnd = 1
+    primeFactors(num, primes) { p ->
+        if (divisors.size < count * 2) divisors = divisors.copyOf(divisors.size * 4)
+        if (last != p) {
+            last = p
+            for (i in 0 until count) divisors[count + i] = p * divisors[i]
+            count += count
+        } else {
+            val c = lastEnd - lastStart
+            for (i in 0 until c) divisors[lastEnd + i] = p * divisors[lastStart + i]
+            count += c
+        }
+        lastStart = lastEnd
+        lastEnd = count
+    }
+    return divisors.copyOf(count - 1)
+}
+
+fun divisorsProperSumFast(i: Int, primes: IntArray): Int {
+    var sum = 1
+    var j = i
+    for (p in primes) {
+        if (p * p > j) break
+        val last = sum
+        while (j % p == 0) {
+            j /= p
+            sum = sum * p + last
+        }
+    }
+    if (j != 1) sum += sum * j
+    return sum - i
 }
