@@ -8,17 +8,32 @@ import kotlin.system.measureNanoTime
 
 fun main() {
     val out = System.out
+    val completed = HashMap<Int, Boolean>()
     for (i in 10001..19999) {
         val pClass = Problem::class.java
         runCatching {
-            val clazz = pClass.classLoader.loadClass(pClass.name + i.toString().substring(1, 5))
+            val folder = i.toString().substring(1, 3)
+            val cName = pClass.packageName + ".p${folder}xx.Problem" + i.toString().substring(1, 5)
+            val clazz = pClass.classLoader.loadClass(cName)
             val instance = clazz.constructors.first().newInstance() as Problem
             System.setOut(out)
+            completed[i - 10000] = true
             runCatching { instance.run(true) }.onFailure {
+                completed[i - 10000] = false
                 System.setOut(out)
-                out.println("\u001B[31mError!\u001B[0m")
+                out.println("\u001B[31m" + it.message + "\u001B[0m")
             }
         }
+    }
+    println()
+    for (i in 0..(completed.keys.max() / 10) + 1) {
+        if (i % 10 == 0) println("       0  1  2  3  4  5  6  7  8  9")
+        print("${(i + 1000).toString().drop(1)}x: ")
+        for (j in 0..9) {
+            val c = completed[i * 10 + j]
+            print(if (c == null) "   " else if (c) " \u001B[32mX\u001B[0m " else " \u001B[31mE\u001B[0m ")
+        }
+        println()
     }
 }
 
@@ -38,11 +53,9 @@ abstract class Problem(
         val calc = calc()
         println(calc)
         if (result != null && calc != result && calc.toString() != result.toString()) {
-            if (runAll) {
-                out.println("\u001B[31mWrong!\u001B[0m")
-                return
+            if (!runAll) {
+                System.err.println(result)
             }
-            System.err.println(result)
             throw error("Wrong!")
         }
         val meassureRepeat = if (runAll) (1) else meassureRepeat
@@ -50,10 +63,11 @@ abstract class Problem(
         measureStage("Init", meassureRepeat / 2, out)
         val time = measureStage("Measuring", meassureRepeat, out)
         val ms = (time / meassureRepeat / 1000f).roundToInt() / 1000f
+        val missing = if (result == null) " \u001B[93mResult missing!\u001B[0m" else ""
         if (runAll)
-            out.println("$calc in $ms ms.")
+            out.println("$calc in $ms ms.$missing")
         else
-            out.println("In $ms ms.")
+            out.println("In $ms ms.$missing")
         System.setOut(out)
     }
 
