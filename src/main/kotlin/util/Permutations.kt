@@ -63,3 +63,14 @@ fun Int.isPermutation(other: Int): Boolean {
     }
     return digits.all { it == 0 }
 }
+
+fun Int.isPandigital1to9(): Boolean {
+    if (this < 123456789 || this > 987654321) return false
+    var prod = 0
+    var i = this
+    while (i != 0) {
+        prod += 1.shl(i % 10)
+        i /= 10
+    }
+    return prod == 1022
+}

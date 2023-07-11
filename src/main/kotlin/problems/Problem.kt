@@ -26,7 +26,7 @@ fun main() {
         }
     }
     println()
-    for (i in 0..(completed.keys.max() / 10) + 1) {
+    for (i in 0..(completed.keys.max() / 10)) {
         if (i % 10 == 0) println("       0  1  2  3  4  5  6  7  8  9")
         print("${(i + 1000).toString().drop(1)}x: ")
         for (j in 0..9) {

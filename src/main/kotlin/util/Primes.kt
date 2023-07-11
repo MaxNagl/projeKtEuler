@@ -148,6 +148,16 @@ fun Int.isPrime(checks: IntArray): Boolean {
     return true
 }
 
+fun Long.isPrime(checks: IntArray): Boolean {
+    if (this < 2) return false
+    val last = sqrt(this.toFloat()).toInt()
+    for (p in checks) {
+        if (p > last) return true
+        if (this % p == 0L) return false
+    }
+    return true
+}
+
 fun main() {
     for (i in 1..10) primes(100_000)
     println("Primes until 1,000,000 in " + measureTimeMillis {
