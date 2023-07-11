@@ -1,7 +1,6 @@
 package util
 
 import kotlinx.coroutines.*
-import java.math.BigInteger
 import kotlin.math.sqrt
 import kotlin.random.Random
 import kotlin.system.measureTimeMillis
@@ -84,14 +83,14 @@ private fun primesRage(start: Int, end: Int, checks: IntArray): IntArray {
 }
 
 fun primesSieve(limit: Int): BooleanArray {
-    val array = BooleanArray(limit + 1)
+    val array = BooleanArray(limit)
     array.fill(true)
     array[0] = false
     array[1] = false
     val max = sqrt(limit.toFloat()).toInt()
     (2..max).forEach { p ->
         if (array[p]) {
-            ((p + p) ..limit step p).forEach {
+            ((p + p) until limit step p).forEach {
                 array[it] = false
             }
         }
@@ -129,7 +128,7 @@ private fun millerRabinTest(d: Int, n: Int): Boolean {
     return false
 }
 
-private fun isProbablePrime(n: Int, k: Int): Boolean {
+fun isProbablePrime(n: Int, k: Int): Boolean {
     if (n <= 1 || n == 4) return false
     if (n <= 3) return true
     var d = n - 1
@@ -139,7 +138,7 @@ private fun isProbablePrime(n: Int, k: Int): Boolean {
 }
 
 fun Int.isPrime(checks: IntArray): Boolean {
-    if (this < 2) return false
+    if (this < 2 || this % 2 == 0 && this != 2) return false
     val last = sqrt(this.toFloat()).toInt()
     for (p in checks) {
         if (p > last) return true

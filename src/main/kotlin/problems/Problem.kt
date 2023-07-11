@@ -39,8 +39,11 @@ fun main() {
 
 abstract class Problem(
     val result: Any? = null,
-    val meassureRepeat: Int = 100
+    val meassureRepeat: Int = 100,
+    val hasMulticore: Boolean = false
 ) {
+    var multicore = false
+
     abstract fun calc(): Any
 
     @Suppress("UNREACHABLE_CODE")
@@ -50,24 +53,40 @@ abstract class Problem(
             print(javaClass.simpleName.replaceFirst("0", " 0") + ": ")
             System.setOut(PrintStream(OutputStream.nullOutputStream()))
         }
-        val calc = calc()
+        var calc = calc()
         println(calc)
         if (result != null && calc != result && calc.toString() != result.toString()) {
             if (!runAll) {
-                System.err.println(result)
-            }
-            throw error("Wrong!")
+                out.println("\u001B[31m$result is correct!\u001B[0m")
+            } else throw error("Wrong!")
         }
-        val meassureRepeat = if (runAll) (1) else meassureRepeat
+        if (hasMulticore) {
+            multicore = true
+            calc = calc()
+            if (result != null && calc != result && calc.toString() != result.toString()) {
+                if (!runAll) {
+                    out.println("\u001B[31m$calc multicore\u001B[0m")
+                } else throw error("Multicore error!")
+            }
+            multicore = false
+        }
+        val measureRepeat = if (runAll) (1) else meassureRepeat
         System.setOut(PrintStream(OutputStream.nullOutputStream()))
-        measureStage("Init", meassureRepeat / 2, out)
-        val time = measureStage("Measuring", meassureRepeat, out)
-        val ms = (time / meassureRepeat / 1000f).roundToInt() / 1000f
+        measureStage("Init", measureRepeat / 2, out)
+        val time = measureStage("Measuring", measureRepeat, out)
+        val ms = (time / measureRepeat / 1000f).roundToInt() / 1000f
+        val multiCore = if (hasMulticore) {
+            multicore = true
+            val mcTime = measureStage("Measuring Multicore", measureRepeat, out)
+            val mcMs = (mcTime / measureRepeat / 1000f).roundToInt() / 1000f
+            " (multicore: $mcMs ms)"
+        } else ""
         val missing = if (result == null) " \u001B[93mResult missing!\u001B[0m" else ""
         if (runAll)
-            out.println("$calc in $ms ms.$missing")
+            out.println("$calc in $ms ms$multiCore.$missing")
         else
-            out.println("In $ms ms.$missing")
+            out.println("In $ms ms$multiCore.$missing")
+
         System.setOut(out)
     }
 
