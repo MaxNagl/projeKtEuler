@@ -89,3 +89,13 @@ fun Int.isPandigital1to9(): Boolean {
     }
     return prod == 1022
 }
+
+fun Int.isPalindrome(): Boolean {
+    var i = this
+    var p = 0
+    while (i != 0) {
+        p = p * 10 + i % 10
+        i /= 10
+    }
+    return p == this
+}

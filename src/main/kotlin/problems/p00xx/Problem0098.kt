@@ -18,8 +18,7 @@ class Problem0098 : Problem(18769) {
         }.filter { it.value.size > 1 }
         val numbers = List(sqrt(1000000000f).toInt()) { it * it }.groupBy { word ->
             word.toLastPermutation()
-        }
-            .filter { it.value.size > 1 }.map { it.value.map { i -> i.toString() } }.groupBy { list ->
+        }.filter { it.value.size > 1 }.map { it.value.map { i -> i.toString() } }.groupBy { list ->
             HashMap<Char, Int>().apply {
                 list.first().forEach { inc(it) }
             }.values.sorted()

@@ -46,6 +46,7 @@ fun primeFactors(num: Long, primes: IntArray? = null, block: (Int) -> Unit) {
 }
 
 fun primeFactors(num: Int, primes: IntArray? = null, block: (Int) -> Unit) {
+    if (num < 2) return
     val ps = primes ?: primes(sqrt(num.toFloat()).toInt() + 1)
     var n = num
     for (it in ps) {

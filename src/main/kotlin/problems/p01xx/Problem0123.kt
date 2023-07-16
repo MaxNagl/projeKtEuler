@@ -11,10 +11,10 @@ fun main() = runProblem()
 
 class Problem0123 : Problem(21035) {
     override fun calc(): Any {
-        val primes = primes(500000).map { BigInteger.valueOf(it.toLong()) }
+        val primes = primes(500000)
         val max = BigInteger.valueOf(10000000000L)
         return Collections.binarySearch((0 until primes.size step 2).toMutableList(), 0) { n, m ->
-            val p = primes[n]
+            val p = BigInteger.valueOf(primes[n].toLong())
             val mod = p * p
             val a = (p - BigInteger.ONE).modPow(BigInteger.valueOf(n + 1L), mod)
             val b = (p + BigInteger.ONE).modPow(BigInteger.valueOf(n + 1L), mod)
