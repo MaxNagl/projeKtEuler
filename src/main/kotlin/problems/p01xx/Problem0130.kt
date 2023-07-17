@@ -7,7 +7,7 @@ import util.primesSieve
 
 fun main() = runProblem()
 
-class Problem0130 : Problem() {
+class Problem0130 : Problem(149253) {
     override fun calc(): Any {
         val primes = primesSieve(100000)
         var n = 2

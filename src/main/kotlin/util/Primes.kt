@@ -82,16 +82,69 @@ private fun primesRage(start: Int, end: Int, checks: IntArray): IntArray {
     return primes.copyOf(pos)
 }
 
+//fun primesSieve(limit: Int): BooleanArray {
+//    val array = BooleanArray(limit)
+//    array.fill(true)
+//    array[0] = false
+//    array[1] = false
+//    val max = sqrt(limit.toFloat()).toInt()
+//    for (p in 2..max) {
+//        if (array[p]) {
+//            var it = p + p
+//            while (it < limit) {
+//                array[it] = false
+//                it += p
+//            }
+//        }
+//    }
+//    return array
+//}
+//
 fun primesSieve(limit: Int): BooleanArray {
     val array = BooleanArray(limit)
     array.fill(true)
     array[0] = false
     array[1] = false
     val max = sqrt(limit.toFloat()).toInt()
-    (2..max).forEach { p ->
-        if (array[p]) {
-            ((p + p) until limit step p).forEach {
-                array[it] = false
+    (0..limit step 200000).forEach { start ->
+        val end = (start + 200000).coerceAtMost(limit)
+        for (p in 2..max) {
+            if (array[p]) {
+                var it = (start / p * p).coerceAtLeast(p + p)
+                while (it < end) {
+                    array[it] = false
+                    it += p
+                }
+            }
+        }
+    }
+    return array
+}
+
+fun primesSieveMC(
+    limit: Int,
+    multiCore: Boolean,
+    completed: ((BooleanArray, IntRange) -> Unit)? = null
+): BooleanArray {
+    if (!multiCore) return primesSieve(limit).also { completed?.invoke(it, 0 until limit) }
+    val max = sqrt(limit.toFloat()).toInt()
+    val array = BooleanArray(limit)
+    array.fill(true)
+    array[0] = false
+    array[1] = false
+    val rootPrimes = primes(max + 1)
+    runBlocking(Dispatchers.Default) {
+        (0..limit step 200000).forEach { start ->
+            launch {
+                val end = (start + 200000).coerceAtMost(limit)
+                rootPrimes.forEach { p ->
+                    var it = (start / p * p).coerceAtLeast(p + p)
+                    while (it < end) {
+                        array[it] = false
+                        it += p
+                    }
+                }
+                completed?.invoke(array, start until end)
             }
         }
     }
@@ -106,7 +159,7 @@ fun BooleanArray.indexesOfTrue(): IntArray {
 }
 
 private fun millerRabinTest(d: Int, n: Int): Boolean {
-    val a = 2 + Random.nextInt (n - 4)
+    val a = 2 + Random.nextInt(n - 4)
     var t = a % n
     var e = d
     var x = 1

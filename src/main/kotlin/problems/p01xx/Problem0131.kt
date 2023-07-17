@@ -10,7 +10,7 @@ import java.math.BigInteger
 
 fun main() = runProblem()
 
-class Problem0131 : Problem() {
+class Problem0131 : Problem(173) {
     override fun calc(): Any {
         val primes = primes(1000)
         var count = 0

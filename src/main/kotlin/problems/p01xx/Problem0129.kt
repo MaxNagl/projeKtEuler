@@ -8,7 +8,7 @@ import java.math.BigInteger
 
 fun main() = runProblem()
 
-class Problem0129 : Problem() {
+class Problem0129 : Problem(1000023) {
     override fun calc(): Any {
         var n = 1000000
         while (true) {
