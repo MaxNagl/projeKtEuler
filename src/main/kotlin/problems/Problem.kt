@@ -77,6 +77,7 @@ abstract class Problem(
         val ms = (time / measureRepeat / 1000f).roundToInt() / 1000f
         val multiCore = if (hasMulticore) {
             multicore = true
+            measureStage("Init", measureRepeat / 2, out)
             val mcTime = measureStage("Measuring Multicore", measureRepeat, out)
             val mcMs = (mcTime / measureRepeat / 1000f).roundToInt() / 1000f
             " (multicore: $mcMs ms)"

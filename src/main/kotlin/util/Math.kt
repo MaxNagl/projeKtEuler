@@ -10,8 +10,7 @@ fun ggt(a: Int, b: Int): Int {
     var c = a
     var d = b
     while (c != 0 && d != 0) {
-        if (c >= d) c %= d
-        if (c != 0 && c < d) d %= c
+        if (c >= d) c %= d else d %= c
     }
     return c + d
 }
@@ -20,8 +19,7 @@ fun ggt(a: Long, b: Long): Long {
     var c = a
     var d = b
     while (c != 0L && d != 0L) {
-        if (c >= d) c %= d
-        if (c != 0L && c < d) d %= c
+        if (c >= d) c %= d else d %= c
     }
     return c + d
 }
